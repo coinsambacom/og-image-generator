@@ -50,6 +50,6 @@ import { wrapText } from "./helpers";
   const port = process.env.PORT || 3131;
 
   app.listen(port, () =>
-    console.info(`og image server is running on port ${process.env.port}`)
+    console.info(`og image server is running on port ${port}`)
   );
 })();
