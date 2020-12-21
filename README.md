@@ -1,5 +1,7 @@
 # og-image-generator
 
+![example](./example.png)
+
 ![ts](https://flat.badgen.net/badge/-/TypeScript?icon=typescript&label&labelColor=blue&color=555555)
 ![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)
 [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.png?v=103)](https://opensource.org/licenses/mit-license.php)
