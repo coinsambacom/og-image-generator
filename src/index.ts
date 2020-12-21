@@ -1,41 +1,55 @@
 import express from "express";
-import { createCanvas } from "canvas";
+import { createCanvas, loadImage } from "canvas";
+import { wrapText } from "./helpers";
 
-const routes = express.Router();
+(async () => {
+  const mainLogo = await loadImage("./img/main_logo_dark.png");
+  const background = await loadImage("./img/background-1.jpg");
 
-const app = express();
+  const routes = express.Router();
+  const app = express();
 
-routes.get("/og", (req, res) => {
-  const { text } = req.query as { text: string };
+  routes.get("/og.jpg", (req, res) => {
+    const { text } = req.query as { text: string };
 
-  const width = 1200;
-  const height = 630;
+    if (!text || typeof text !== "string")
+      res.status(500).send({ error: "only strings are allowed" });
 
-  const canvas = createCanvas(width, height);
-  const context = canvas.getContext("2d");
+    const padding = 80;
+    const width = 1200;
+    const height = 630;
 
-  context.fillStyle = "#000";
-  context.fillRect(0, 0, width, height);
+    const canvas = createCanvas(width, height);
+    const context = canvas.getContext("2d");
 
-  context.font = "bold 70pt Menlo";
-  context.textAlign = "center";
-  context.textBaseline = "top";
-  //   context.fillStyle = "#3574d4";
+    context.drawImage(background, 0, 0, width, height);
 
-  const textWidth = context.measureText(text).width;
-  context.fillRect(600 - textWidth / 2 - 10, 170 - 5, textWidth + 20, 120);
-  context.fillStyle = "#fff";
-  context.fillText(text, 600, 170);
+    context.font = "bold 70pt Menlo";
+    context.fillStyle = "#fff";
 
-  context.fillStyle = "#fff";
-  context.font = "bold 30pt Menlo";
-  context.fillText("coinsamba.com", 600, 530);
+    wrapText(context, text, padding, 200, 1000, 90);
 
-  const buffer = canvas.toBuffer("image/png");
-  res.contentType("image/jpeg");
-  res.send(buffer);
-});
+    const logoWidth = 270;
+    const logoHeight = 76;
 
-app.use(routes);
+    context.drawImage(
+      mainLogo,
+      600 - logoWidth / 2,
+      530,
+      logoWidth,
+      logoHeight
+    );
 
-app.listen(80);
+    const buffer = canvas.toBuffer("image/png");
+    res.contentType("image/jpeg");
+    res.send(buffer);
+  });
+
+  app.use(routes);
+
+  const port = process.env.PORT || 3131;
+
+  app.listen(port, () =>
+    console.info(`og image server is running on port ${process.env.port}`)
+  );
+})();
