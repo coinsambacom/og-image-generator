@@ -15,7 +15,7 @@ import { wrapText } from "./helpers";
     if (!text || typeof text !== "string")
       res.status(500).send({ error: "only strings are allowed" });
 
-    if (b64) text = btoa(text);
+    if (b64) text = Buffer.from(text, "base64").toString("utf-8");
     else text = decodeURI(unescape(text));
 
     const padding = 80;
