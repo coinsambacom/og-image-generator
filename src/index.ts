@@ -40,7 +40,7 @@ import { wrapText } from "./helpers";
       logoHeight
     );
 
-    const buffer = canvas.toBuffer("image/png");
+    const buffer = canvas.toBuffer("image/jpeg", { quality: 0.75 });
     res.contentType("image/jpeg");
     res.send(buffer);
   });
