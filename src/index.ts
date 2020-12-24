@@ -10,10 +10,12 @@ import { wrapText } from "./helpers";
   const app = express();
 
   routes.get("/og.jpg", (req, res) => {
-    const { text } = req.query as { text: string };
+    let { text } = req.query as { text: string };
 
     if (!text || typeof text !== "string")
       res.status(500).send({ error: "only strings are allowed" });
+
+    text = decodeURI(unescape(text));
 
     const padding = 80;
     const width = 1200;
