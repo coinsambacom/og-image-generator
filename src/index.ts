@@ -1,58 +1,61 @@
 import express from "express";
-import { createCanvas, loadImage } from "canvas";
+import { createCanvas, loadImage, registerFont } from "canvas";
 import { wrapText } from "./helpers";
+import { env } from "./env";
+
+const fontFamily = "CoolveticaRg";
 
 (async () => {
-  const mainLogo = await loadImage("./img/main_logo_dark.png");
-  const background = await loadImage("./img/background-1.jpg");
+  registerFont(`src/static/fonts/${fontFamily}.otf`, {
+    family: fontFamily,
+  });
+
+  const background = await loadImage("src/static/img/background-1.jpg");
 
   const routes = express.Router();
   const app = express();
 
-  routes.get("/og.jpg", (req, res) => {
-    let { text, b64 } = req.query as { text: string; b64?: boolean };
+  routes.get<any, any, any, { text: string; b64?: boolean }>(
+    "/og.jpg",
+    (req, res) => {
+      let { text, b64 } = req.query;
 
-    if (!text || typeof text !== "string")
-      res.status(500).send({ error: "only strings are allowed" });
+      if (!text || typeof text !== "string") {
+        res.status(500).send({ error: "only strings are allowed" });
+      }
 
-    if (b64) text = Buffer.from(text, "base64").toString("utf-8");
-    else text = decodeURI(unescape(text));
+      if (b64) {
+        text = Buffer.from(text, "base64").toString("utf-8");
+      } else {
+        text = decodeURI(unescape(text));
+      }
 
-    const padding = 80;
-    const width = 1200;
-    const height = 630;
+      const padding = 80;
+      const width = 1200;
+      const height = 630;
 
-    const canvas = createCanvas(width, height);
-    const context = canvas.getContext("2d");
+      const canvas = createCanvas(width, height);
 
-    context.drawImage(background, 0, 0, width, height);
+      const context = canvas.getContext("2d");
 
-    context.font = "bold 70pt Menlo";
-    context.fillStyle = "#fff";
+      context.drawImage(background, 0, 0, width, height);
 
-    wrapText(context, text, padding, 200, 1000, 90);
+      context.font = `bold 70pt Coolvetica Rg`;
+      context.fillStyle = "#fff";
 
-    const logoWidth = 270;
-    const logoHeight = 76;
+      const centerX = width / 2;
 
-    context.drawImage(
-      mainLogo,
-      600 - logoWidth / 2,
-      530,
-      logoWidth,
-      logoHeight
-    );
+      wrapText(context, text, centerX, 200, width - 2 * padding, 90);
 
-    const buffer = canvas.toBuffer("image/jpeg", { quality: 0.75 });
-    res.contentType("image/jpeg");
-    res.send(buffer);
-  });
+      const buffer = canvas.toBuffer("image/jpeg", { quality: 1 });
+      res.contentType("image/jpeg");
+      res.send(buffer);
+    }
+  );
 
   app.use(routes);
 
-  const port = process.env.PORT || 3131;
-
-  app.listen(port, () =>
-    console.info(`og image server is running on port ${port}`)
+  app.listen(env.PORT, () =>
+    console.info(`og-image-generator server is running on port ${env.PORT}`)
   );
 })();
