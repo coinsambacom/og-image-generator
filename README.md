@@ -16,10 +16,6 @@ The main difference between this project and theirs is that I needed something s
 
 # How to use
 
-Simple do `yarn install` and `yarn start`
+Simple do `yarn` and `yarn run start:dev`
 
 To generate an image dynamically open your browser and visit the link `localhost:3131/og.jpg?text=hello%20from%20github`
-
-# Please contribute
-
-I am not the most expert when it comes to Typescript, so help improve the code, if you saw something that I am using the wrong way or that there is a better way to solve open an **issue**.
