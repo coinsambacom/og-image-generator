@@ -10,6 +10,18 @@ RUN apk add --no-cache openssh
 # Add github to known hosts
 RUN mkdir -p -m 0600 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
 
+# Install node-canvas dependencies
+RUN apk add --update --no-cache \
+    make \
+    g++ \
+    jpeg-dev \
+    cairo-dev \
+    giflib-dev \
+    pango-dev \
+    libtool \
+    autoconf \
+    automake
+
 COPY . .
 
 # yarn and yarn build will install, build and remove dev dependencies
