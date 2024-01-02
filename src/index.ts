@@ -40,7 +40,7 @@ const fontFamily = "CoolveticaRg";
 
       context.drawImage(background, 0, 0, width, height);
 
-      context.font = `bold 70pt Coolvetica Rg`;
+      context.font = `70pt Coolvetica Rg`;
       context.fillStyle = "#fff";
 
       const centerX = width / 2;
